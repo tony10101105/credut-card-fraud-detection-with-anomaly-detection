@@ -33,8 +33,11 @@ random.seed(0)
 #load datasets
 print('loading the {} dataset...'.format(args.mode+'ing'))
 
-non_fraud_Data = DataSet.SplitedDataSet(mode = 'non-fraud')
-fraud_Data = DataSet.SplitedDataSet(mode = 'fraud')
+totalData = DataSet.TotalDataSet(args.normalization)
+
+non_fraud_Data = DataSet.SplitedDataSet(totalData ,mode = 'non-fraud')
+fraud_Data = DataSet.SplitedDataSet(totalData, mode = 'fraud')
+
 
 '''data_point_num = len(non_fraud_Data)
 test_data_point_num = int(data_point_num * args.test_ratio)
@@ -45,11 +48,9 @@ data_point_num = len(non_fraud_Data)
 test_data_point_num = 490
 train_data_point_num = data_point_num - test_data_point_num
 trainData, nonFraudTestData = random_split(non_fraud_Data, [train_data_point_num, test_data_point_num])
-trainData = DataSet.DataSet([trainData], args.normalization)
 fraud_Data, _ = random_split(fraud_Data, [490, 2])
-testData = DataSet.DataSet([nonFraudTestData, fraud_Data], args.normalization) #following the setting of 13.pdf
+testData = ConcatDataset([nonFraudTestData, fraud_Data]) #following the setting of 13.pdf
 
-# print(testData.features)
 
 trainDataLoader = DataLoader(dataset = trainData, batch_size = args.batch_size, shuffle = True, drop_last=True)
 testDataLoader = DataLoader(dataset = testData, batch_size = args.batch_size, shuffle = True)
